@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import { useState, type FC } from 'react';
 import { Flame, Moon, Sun, BookOpen, X, Info } from 'lucide-react';
+import { VisitorCounter } from './VisitorCounter';
 
 interface HeaderProps {
   darkMode: boolean;
   onToggleDarkMode: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ darkMode, onToggleDarkMode }) => {
+export const Header: FC<HeaderProps> = ({ darkMode, onToggleDarkMode }) => {
   const [showGuideModal, setShowGuideModal] = useState(false);
 
   return (
@@ -18,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({ darkMode, onToggleDarkMode }) =>
           </div>
           <div>
             <h1 className="font-black text-lg sm:text-xl text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-2">
-              FIRE 財務自由試算器
+              FIRE 財務自由計算機
               <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
                 Pro
               </span>
@@ -30,6 +31,8 @@ export const Header: React.FC<HeaderProps> = ({ darkMode, onToggleDarkMode }) =>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <VisitorCounter />
+
           <button
             onClick={() => setShowGuideModal(true)}
             className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-all"
