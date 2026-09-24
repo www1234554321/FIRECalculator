@@ -5,49 +5,23 @@ export const VisitorCounter: FC = () => {
   const [visitCount, setVisitCount] = useState<number>(1280);
 
   useEffect(() => {
-    let isMounted = true;
+    const STORAGE_KEY = 'fire_calc_visit_count';
+    const LAST_VISIT_KEY = 'fire_calc_last_visit';
 
-    async function fetchVisitorCount() {
-      const STORAGE_KEY = 'fire_calc_visit_count';
-      const LAST_VISIT_KEY = 'fire_calc_last_visit';
+    let count = parseInt(localStorage.getItem(STORAGE_KEY) || '1280', 10);
+    const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
+    const now = Date.now();
 
-      let count = parseInt(localStorage.getItem(STORAGE_KEY) || '1280', 10);
-      const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
-      const now = Date.now();
+    // Check if new session (30 mins interval)
+    const isNewVisit = !lastVisit || now - parseInt(lastVisit, 10) > 30 * 60 * 1000;
 
-      // Check if new session (30 mins interval)
-      const isNewVisit = !lastVisit || now - parseInt(lastVisit, 10) > 30 * 60 * 1000;
-
-      if (isNewVisit) {
-        count += 1;
-        localStorage.setItem(STORAGE_KEY, count.toString());
-        localStorage.setItem(LAST_VISIT_KEY, now.toString());
-      }
-
-      try {
-        // Free cloud counter API (api.counterapi.dev or fallback countapi)
-        const response = await fetch('https://api.counterapi.dev/v1/fire-calculator-taiwan/visits/up');
-        if (response.ok) {
-          const data = await response.json();
-          if (data && typeof data.count === 'number' && isMounted) {
-            setVisitCount(data.count + 1200); // Offset base count
-            return;
-          }
-        }
-      } catch {
-        // Network fallback
-      }
-
-      if (isMounted) {
-        setVisitCount(count);
-      }
+    if (isNewVisit) {
+      count += 1;
+      localStorage.setItem(STORAGE_KEY, count.toString());
+      localStorage.setItem(LAST_VISIT_KEY, now.toString());
     }
 
-    fetchVisitorCount();
-
-    return () => {
-      isMounted = false;
-    };
+    setVisitCount(count);
   }, []);
 
   return (
